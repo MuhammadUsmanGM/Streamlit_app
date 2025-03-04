@@ -9,7 +9,6 @@ time.sleep(2)
 st.write("Please wait...")
 time.sleep(3)
 
-# Initialize session state variables if they don't exist
 if "move" not in st.session_state:
     st.session_state.move = "choose"
 if "player_score" not in st.session_state:
