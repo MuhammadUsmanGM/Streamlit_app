@@ -15,7 +15,7 @@ if "player_score" not in st.session_state:
 if "opponent_score" not in st.session_state:
     opponent_score=0
     
-move=st.radio("Choose Your move",["Choose","Rock","Paper","Scissors"])
+move=st.selectbox("Choose Your move",["Choose","Rock","Paper","Scissors"])
 if move.lower()=="choose":
     time.sleep(2)
     st.write("Please choose a move to start the game.")
