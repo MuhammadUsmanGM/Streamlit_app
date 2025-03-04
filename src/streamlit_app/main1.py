@@ -15,8 +15,21 @@ if "player_score" not in st.session_state:
     st.session_state.player_score = 0
 if "opponent_score" not in st.session_state:
     st.session_state.opponent_score = 0
+if "game_over" not in st.session_state:
+    st.session_state.game_over = False
 
-move = st.selectbox("Choose Your move", ["Choose", "Rock", "Paper", "Scissors"])
+if st.session_state.game_over:
+    if st.button("Play Again"):
+        st.session_state.player_score = 0
+        st.session_state.opponent_score = 0
+        st.session_state.game_over = False
+        st.experimental_rerun()
+
+move = st.selectbox(
+    "Choose Your move",
+    ["Choose", "Rock", "Paper", "Scissors"],
+    disabled=st.session_state.game_over,
+)
 if move.lower() == "choose":
     time.sleep(2)
     st.write("Please choose a move to start the game.")
@@ -52,6 +65,7 @@ elif move.lower() == "rock" or move.lower() == "paper" or move.lower() == "sciss
         st.write(f"Your Score: {st.session_state.player_score}")
         st.write(f"Opponent's score: {st.session_state.opponent_score}")
     if st.session_state.player_score == 5 or st.session_state.opponent_score == 5:
+        st.session_state.game_over = True
         if st.session_state.player_score == 5:
             st.write(
                 f"You Win this round by {st.session_state.player_score - st.session_state.opponent_score} points."
