@@ -10,8 +10,8 @@ time.sleep(3)
 
 if "move" not in st.session_state:
     move="choose"
-if "player_score" not in st.session_state:
-    player_score=0
+
+player_score=0
 if "opponent_score" not in st.session_state:
     opponent_score=0
     
