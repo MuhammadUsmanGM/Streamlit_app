@@ -18,6 +18,12 @@ if "opponent_score" not in st.session_state:
 if "game_over" not in st.session_state:
     st.session_state.game_over = False
 
+col1 , col2 =st.columns(2)
+with col1:
+    st.metric("Your score", st.session_state.player_score)
+with col2:
+    st.metric("opponent's Score", st.session_state.opponent_score)
+
 if st.session_state.game_over:
     if st.button("Play Again"):
         st.session_state.player_score = 0
@@ -31,7 +37,6 @@ move = st.selectbox(
     disabled=st.session_state.game_over,
 )
 if move.lower() == "choose":
-    time.sleep(2)
     st.write("Please choose a move to start the game.")
 elif move.lower() == "rock" or move.lower() == "paper" or move.lower() == "scissors":
     st.subheader("ROCK")
@@ -41,11 +46,9 @@ elif move.lower() == "rock" or move.lower() == "paper" or move.lower() == "sciss
     st.subheader("SCISSORS")
     time.sleep(1)
     st.subheader("SHOOT")
-    time.sleep(1)
     st.write(f"Your move: {move}")
     opponent = random.choice(["Rock", "Paper", "Scissors"])
     st.write(f"Opponent's move: {opponent}")
-    time.sleep(2)
     if move.lower() == opponent.lower():
         st.write("It's a Tie")
         st.write(f"Your Score: {st.session_state.player_score}")
@@ -67,10 +70,10 @@ elif move.lower() == "rock" or move.lower() == "paper" or move.lower() == "sciss
     if st.session_state.player_score == 5 or st.session_state.opponent_score == 5:
         st.session_state.game_over = True
         if st.session_state.player_score == 5:
-            st.write(
+            st.success(
                 f"You Win this round by {st.session_state.player_score - st.session_state.opponent_score} points."
             )
         elif st.session_state.opponent_score == 5:
-            st.write(
+            st.error(
                 f"You lose this round by {st.session_state.opponent_score - st.session_state.player_score} points."
             )

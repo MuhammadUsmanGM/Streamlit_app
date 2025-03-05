@@ -1,5 +1,4 @@
 import random
-import time
 
 import streamlit as st
 
@@ -7,182 +6,167 @@ st.title("Adventure Game")
 st.header("Welcome to the Adventure Game")
 st.subheader("Enjoy the Endless Adventure")
 
-st.write("Welcome...")
-time.sleep(3)
 if "inventory" not in st.session_state:
-        st.session_state.inventory = []
+    st.session_state.inventory = []
 if "health" not in st.session_state:
-        st.session_state.health = 100
+    st.session_state.health = 100
 if "location" not in st.session_state:
-        st.session_state.location = "Choose"    
+    st.session_state.location = "Choose"
+if "game_over" not in st.session_state:
+    st.session_state.game_over = False
+
+col1, col2 = st.columns(2)
+with col1:
+    st.metric("Health", st.session_state.health)
+with col2:
+    st.write(
+        "Inventory:",
+        (
+            ", ".join(st.session_state.inventory)
+            if st.session_state.inventory
+            else "Empty"
+        ),
+    )
+
+# Game over handling
+if st.session_state.game_over:
+    if st.button("Restart Game"):
+        st.session_state.health = 100
+        st.session_state.inventory = []
+        st.session_state.location = "Choose"
+        st.session_state.game_over = False
+        st.experimental_rerun()
+
 user = st.selectbox(
-            "Choose a Location",
-            ["Choose", "Forest", "River", "Cave", "Quit"],
-            key="location_radio",
-        )
-st.write(f"Health: {st.session_state.health}")
-st.write(f"Inventory: {st.session_state.inventory}")
+    "Choose a Location",
+    ["Choose", "Forest", "River", "Cave", "Quit"],
+    key="location_radio",
+    disabled=st.session_state.game_over,
+)
+
+
+def check_health():
+    if st.session_state.health <= 0:
+        st.session_state.game_over = True
+        st.error("You Died...")
+        st.error("You lost your inventory...")
+        st.session_state.inventory = []
+        return True
+    return False
+
 
 if user == "Forest":
-            st.write(f"You selected {user}...")
-            st.write(f"Waiting to enter in {user}...")
-            time.sleep(3)
-            st.write("You are in a Forest.")
-            time.sleep(2)
-            st.write("It seems quit in here.")
-            time.sleep(2)
-            st.write("You are in front of a lion.")
-            time.sleep(2)
-            if "lion" not in st.session_state:
-                st.session_state.lion = "Choose"
-            lion = st.radio(
-                        "You wanna fight the lion",
-                        ["Choose", "Yes", "No"],
-                        key="lion_radio",
-                    )
+    st.write("You are in a Forest.")
+    st.write("You are in front of a lion.")
 
-            if lion == "Yes":
-                        st.write("You are having  a great fight.")
-                        time.sleep(3)
-                        damage = random.randint(0, 40)
-                        st.session_state.health = st.session_state.health - damage
+    lion = st.radio(
+        "You wanna fight the lion",
+        ["Choose", "Yes", "No"],
+        key="lion_radio",
+    )
 
-                        if st.session_state.health > 0:
-                            st.write(f"You got a damage of {damage}")
-                            st.write("You had a great fight.")
-                            st.write(f"Your Health {st.session_state.health}")
-                            st.write("After defeating lion,You found a Glowing Crystal")
-                            if "crystal" not in st.session_state:
-                                st.session_state.crystal = "Choose"
-                            crystal = st.radio(
-                                f"You wanna collect Glowing Crystal or not.",
-                                ["Choose", "Yes", "No"],
-                                key="crystal_radio",
-                            )
-                        
-                        if crystal == "Yes":
-                            st.session_state.inventory.append("Glowing Crystal")
-                            st.write("Glowing Crystal added in your inventory.")
-                            st.write(st.session_state.inventory)
-                        elif crystal == "No":
-                            st.write("You missed the treasure of your fate.")
-                        elif st.session_state.health <= 0:
-                            st.write("You died...")
-                            st.write("you lost your inventory.")
-                
-            elif lion == "No":
-                        st.write("You escaped from your fate.")
-                        
+    if lion == "Yes":
+        st.write("You are having a great fight.")
+        damage = random.randint(0, 40)
+        st.session_state.health -= damage
+
+        if not check_health():
+            st.write(f"You got a damage of {damage}")
+            st.write(f"Your Health: {st.session_state.health}")
+            st.write("After defeating lion, You found a Glowing Crystal")
+
+            crystal = st.radio(
+                "You wanna collect Glowing Crystal?",
+                ["Choose", "Yes", "No"],
+                key="crystal_radio",
+            )
+
+            if crystal == "Yes":
+                if "Glowing Crystal" not in st.session_state.inventory:
+                    st.session_state.inventory.append("Glowing Crystal")
+                    st.success("Glowing Crystal added to your inventory!")
+            elif crystal == "No":
+                st.write("You missed the treasure of your fate.")
+
+    elif lion == "No":
+        st.write("You escaped from your fate.")
 
 elif user == "Cave":
-                    st.write(f"You selected {user}...")
-                    st.write(f"Waiting to enter in {user}...")
-                    time.sleep(3)
-                    st.write("You entered in a Cave.")
-                    time.sleep(2)
-                    st.write("It seem darkness rules in this cave")
-                    time.sleep(2)
-                    st.write("In this quite and dark,a bear is ready to have you in dinner.")
-                    time.sleep(2)
-                    if "bear" not in st.session_state:
-                        st.session_state.bear = "Choose"
-                    bear = st.radio(
-                        "You wanna fight with bear.",
-                        ["Choose", "Yes", "No"],
-                        key="bear_radio",
-                    )
+    st.write("You entered in a Cave.")
+    st.write("A bear is ready to have you for dinner.")
 
-                    if bear == "Yes":
-                        st.write("You are having a fight with bear.")
-                        time.sleep(3)
-                        damage = random.randint(0, 40)
-                        st.session_state.health = st.session_state.health - damage
+    bear = st.radio(
+        "You wanna fight with bear?",
+        ["Choose", "Yes", "No"],
+        key="bear_radio",
+    )
 
-                        if st.session_state.health > 0:
-                            st.write(f"You got a damage of {damage}")
-                            st.write("You had a great fight with the bear")
-                            st.write(f"Your Health {st.session_state.health}")
-                            st.write(
-                                f"As expected after defeating bear,You found a Piece of valuable gold"
-                            )
-                            if "gold" not in st.session_state:
-                                st.session_state.gold = "Choose"
-                            gold = st.radio(
-                                f"You wanna collect Piece of valuable gold or not.",
-                                ["Choose", "Yes", "No"],
-                                key="gold_radio",
-                            )
-                            
-                            if gold == "Yes":
-                                st.session_state.inventory.append("Piece of valuable gold")
-                                st.write("Piece of valuable gold added to your inventory.")
-                                st.write(st.session_state.inventory)
-                            elif gold == "No":
-                                st.write("You just missed a valuable Item")
-                        elif st.session_state.health <= 0:
-                            st.write("You Died...")
-                            st.write("You lost your inventory")
-                            
-                    elif bear == "No":
-                        st.write("You escaped from your fate.")
-                        
+    if bear == "Yes":
+        st.write("You are having a fight with bear.")
+        damage = random.randint(0, 40)
+        st.session_state.health -= damage
+
+        if not check_health():
+            st.write(f"You got a damage of {damage}")
+            st.write(f"Your Health: {st.session_state.health}")
+            st.write("You found a Piece of valuable gold!")
+
+            gold = st.radio(
+                "You wanna collect the gold?",
+                ["Choose", "Yes", "No"],
+                key="gold_radio",
+            )
+
+            if gold == "Yes":
+                if "Piece of valuable gold" not in st.session_state.inventory:
+                    st.session_state.inventory.append("Piece of valuable gold")
+                    st.success("Gold added to your inventory!")
+            elif gold == "No":
+                st.write("You missed a valuable item.")
+
+    elif bear == "No":
+        st.write("You escaped from your fate.")
 
 elif user == "River":
-                    st.write(f"You selected {user}...")
-                    st.write(f"Waiting to enter in {user}...")
-                    time.sleep(3)
-                    st.write("You are in a river.Water is a little bit cold.")
-                    time.sleep(2)
-                    st.write("There's a crocodile in front of you.")
-                    time.sleep(2)
-                    if "crocodile" not in st.session_state:
-                        st.session_state.crocodile = "Choose"
-                    crocodile = st.radio(
-                        "You wanna fight with the crocodile.",
-                        ["Choose", "Yes", "No"],
-                        key="crocodile_radio",
-                    )
+    st.write("You arrived at a rushing River.")
+    st.write("A giant crocodile emerges from the water!")
 
-                    if crocodile == "Yes":
-                        st.write("You are having a fight with Crocodile.")
-                        time.sleep(3)
-                        damage = random.randint(0, 40)
-                        st.session_state.health = st.session_state.health - damage
+    crocodile = st.radio(
+        "Do you want to face the crocodile?",
+        ["Choose", "Yes", "No"],
+        key="crocodile_radio",
+    )
 
-                        if st.session_state.health > 0:
-                            st.write(f"You got a damage of {damage}")
-                            st.write(
-                                "Fight with Crocodile was a little bit scary\n but it was an great experience."
-                            )
-                            st.write(f"Your Health {st.session_state.health}")
-                            st.write(f"You found a Pearl in the water")
-                            time.sleep(2)
-                            if "pearl" not in st.session_state:
-                                st.session_state.pearl = "Choose"
-                            pearl = st.radio(
-                                f"YOu wanna collect Pearl or not.",
-                                ["Choose", "Yes", "No"],
-                                key="pearl_radio",
-                            )
-                            if pearl == "Yes":
-                                st.session_state.inventory.append("Pearl")
-                                st.write("Pearl is added in your inventory.")
-                                st.write(st.session_state.inventory)
-                            elif pearl == "No":
-                                st.write("You missed the reward of fight you have.")
-                        elif st.session_state.health <= 0:
-                            st.write("You Died")
-                            st.write("You lost your inventory...")
-                            
-                    elif crocodile == "No":
-                        st.write("You escaped from your fate.")
-                        
+    if crocodile == "Yes":
+        st.write("You engage in a fierce battle with the crocodile.")
+        damage = random.randint(0, 35)
+        st.session_state.health -= damage
+
+        if not check_health():
+            st.write(f"You took {damage} damage")
+            st.write(f"Your Health: {st.session_state.health}")
+            st.write("You found a Magical Pearl in the river bed!")
+
+            pearl = st.radio(
+                "Do you want to take the Magical Pearl?",
+                ["Choose", "Yes", "No"],
+                key="pearl_radio",
+            )
+
+            if pearl == "Yes":
+                if "Magical Pearl" not in st.session_state.inventory:
+                    st.session_state.inventory.append("Magical Pearl")
+                    st.success("Magical Pearl added to your inventory!")
+            elif pearl == "No":
+                st.write("You left the mysterious pearl behind.")
+
+    elif crocodile == "No":
+        st.write("You carefully backed away from the river.")
+
 elif user == "Quit":
-                st.write("You are quitting the game...")
-                st.write("You Escaped...")
-                st.stop()
-                st.rerun()
-                
+    st.write("You are quitting the game...")
+    st.write("Thanks for playing")
+    st.stop()
 
 elif user == "Choose":
-                st.write("Please select a location...")
+    st.info("Please select a location...")
