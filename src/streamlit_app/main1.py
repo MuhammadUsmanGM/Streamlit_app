@@ -9,6 +9,21 @@ time.sleep(2)
 st.write("Please wait...")
 time.sleep(3)
 
+st.markdown(
+    """
+    <style>
+    .stApp {
+        background: linear-gradient(to right,rgb(0, 68, 255), #FF4B4B, #FFE306, #2EF309);
+    }
+    
+    .css-1d391kg { /* Sidebar background */
+        background: linear-gradient(to bottom, #0284C7,rgb(13, 219, 255));
+    }
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
+
 if "move" not in st.session_state:
     st.session_state.move = "choose"
 if "player_score" not in st.session_state:

@@ -6,6 +6,21 @@ st.title("Adventure Game")
 st.header("Welcome to the Adventure Game")
 st.subheader("Enjoy the Endless Adventure")
 
+st.markdown(
+    """
+    <style>
+    .stApp {
+        background: linear-gradient(to right,rgb(0, 68, 255), #FF4B4B, #FFE306, #2EF309);
+    }
+    
+    .css-1d391kg { /* Sidebar background */
+        background: linear-gradient(to bottom, #0284C7,rgb(13, 219, 255));
+    }
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
+
 if "inventory" not in st.session_state:
     st.session_state.inventory = []
 if "health" not in st.session_state:
